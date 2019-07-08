@@ -1,0 +1,10 @@
+# dependencies
+/node_modules
+
+# misc
+.env
+
+npm-debug.log*
+
+# lock-files
+.package-lock.json
