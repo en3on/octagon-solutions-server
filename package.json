@@ -1,10 +1,11 @@
 {
-  "name": "server",
+  "name": "api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "deploy": "now && now alias"
+    "deploy": "now && now --target production",
+    "start": "nodemon api.js"
   },
   "repository": {
     "type": "git",
