@@ -1,8 +1,8 @@
 // User schema
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const schema = mongoose.Schema;
 
-const UserSchema = Schema({
+const UserSchema = schema({
   _id: Schema.Types.ObjectId,
   firstName: {
     type: String,
