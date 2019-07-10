@@ -1,15 +1,14 @@
 // User schema
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const schema = mongoose.Schema;
 
-const UserSchema = Schema({
-  _id: Schema.Types.ObjectId,
-  first_name: {
+const UserSchema = schema({
+  _id: schema.Types.ObjectId,
+  firstName: {
     type: String,
     required: true,
   },
-  middle_name: {type: String},
-  last_name: {
+  lastName: {
     type: String,
     required: true,
   },
