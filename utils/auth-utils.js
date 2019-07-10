@@ -9,7 +9,7 @@ async function generateHash(password) {
 };
 
 function validatePassword(password) {
-  const regexp = /^(?=.*[A-Z])(?=.*[a-z])(?=.[0-9]).{8,}$/;
+  const regexp = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$/;
 
   const valid = regexp.test(password);
 
