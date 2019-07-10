@@ -4,12 +4,11 @@ const Schema = mongoose.Schema;
 
 const UserSchema = Schema({
   _id: Schema.Types.ObjectId,
-  first_name: {
+  firstName: {
     type: String,
     required: true,
   },
-  middle_name: {type: String},
-  last_name: {
+  lastName: {
     type: String,
     required: true,
   },
