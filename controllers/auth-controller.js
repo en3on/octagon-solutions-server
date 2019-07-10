@@ -10,7 +10,7 @@ async function register(req, res) {
 
       if (query === null) {
         const user = await generateUser(firstName, lastName, email, password);
-        res.send(`${user.firstName} ${user.lastName} created successfully`);
+        res.status(201).send(`${user.firstName} ${user.lastName} created successfully`);
       } else {
         throw {
           name: 'Email Taken',
@@ -19,8 +19,15 @@ async function register(req, res) {
       }
     } catch (err) {
       const error = handleError(err);
-      res.status(500).json(error);
+      return res.status(400).json(error);
     };
+  } else {
+    const error = {
+      name: "Invalid Parameters",
+      message: "Please make sure all fields are filled in",
+    };
+
+    return res.status(400).json(error);
   }
 };
 
