@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "deploy": "now && now --target production",
-    "start": "nodemon api.js"
+    "start": "nodemon api.js",
+    "test": "mocha --recursive"
   },
   "repository": {
     "type": "git",
