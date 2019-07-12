@@ -46,4 +46,16 @@ describe('POST /auth/login', () => {
       should.exist(res.body.token);
     });
   });
+
+  context('with an email that doesn\'t exist', () => {
+    beforeEach(() => {
+      user.email = 'idontexist@gmail.com';
+    });
+
+    it('responds with 401', async () => {
+      const res = await postRequest(api, user, url);
+
+      res.status.should.equal(401);
+    });
+  });
 });

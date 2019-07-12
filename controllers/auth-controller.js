@@ -5,7 +5,10 @@ const {
   comparePassword,
 } = require('../utils/auth-utils.js');
 
-const {ValidationError} = require('../utils/error-utils.js');
+const {
+  ValidationError,
+  AuthenticationError,
+} = require('../utils/error-utils.js');
 
 /**
  * register function for users
@@ -62,6 +65,10 @@ async function login(req, res, next) {
   try {
     const {email, password: plainPassword} = req.body;
     const foundUser = await User.findOne({email});
+
+    if (foundUser === null) {
+      throw new AuthenticationError(401, 'Email or password is incorrect!');
+    }
 
     await comparePassword(plainPassword, foundUser.password);
 
