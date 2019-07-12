@@ -3,9 +3,15 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User.js');
 const mongoose = require('mongoose');
 
+const {ValidationError} = require('./error-utils.js');
+
 async function generateHash(password) {
   const saltRounds = 10;
   return await bcrypt.hash(password, saltRounds);
+};
+
+async function generateToken({email}) {
+  return 
 };
 
 function validatePassword(password) {
@@ -14,11 +20,11 @@ function validatePassword(password) {
   const valid = regexp.test(password);
 
   if (!valid) {
-    throw {
-      name: "Invalid Password",
-      message: "Your password MUST satisfy the following criteria:",
-      requirements: ['At least 1 uppercase letter', 'At least 1 lowercase letter', 'At least 1 number', 'At least 8 characters long'],
-    };
+    throw new ValidationError(400, 'Please ensure your password satisfies the following', [
+      'At least 1 Uppercase Letter',
+      'At least 1 Lowercase Letter',
+      'At least 1 Number',
+    ]);
   }
 }
 
@@ -28,10 +34,7 @@ function validateEmail(email) {
   const valid = regexp.test(email);
 
   if (!valid) {
-    throw {
-      name: "Invalid Email",
-      message: "Please enter a valid email!",
-    };
+    throw new ValidationError(400, 'Please enter a valid email address');
   }
 }
 
@@ -51,4 +54,5 @@ async function generateUser(firstName, lastName, email, plainPassword) {
 
 module.exports = {
   generateUser,
+  generateToken,
 };
