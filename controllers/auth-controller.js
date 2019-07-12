@@ -1,5 +1,5 @@
 const User = require('../models/User.js');
-const {generateUser, generateToken} = require('../utils/auth-utils.js');
+const {generateUser, generateToken, comparePassword} = require('../utils/auth-utils.js');
 const {ValidationError} = require('../utils/error-utils.js');
 
 async function register(req, res, next) {
@@ -33,6 +33,26 @@ async function register(req, res, next) {
   };
 };
 
+async function login(req, res, next) {
+  try {
+    const {email, password:plainPassword} = req.body;
+    const foundUser = await User.findOne({email});
+
+    await comparePassword(plainPassword, foundUser.password);
+
+    const token = await generateToken(foundUser);
+
+    return res.status(200).json({
+      message: 'Successfully logged in!',
+      token: token,
+    });
+
+  } catch (err) {
+    next(err);
+  };
+};
+
 module.exports = {
-  register
+  register,
+  login,
 };

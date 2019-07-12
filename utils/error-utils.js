@@ -8,7 +8,20 @@ class ValidationError extends Error {
   }
 }
 
+class AuthenticationError extends Error {
+  constructor(status, message) {
+    super(message);
+    this.status = status;
+    this.name = 'AuthenticationError';
+    this.message = message;
+  }
+}
+
 function errorHandler(err, req, res, next) {
+  // console.error('AN ERROR HAS OCCURRED:', err.name);
+  // console.error('Message:', err.message);
+  // console.error('Stack Trace:', err.stack);
+
   res.status(err.status || 500);
   res.json({
     error: {
@@ -21,5 +34,6 @@ function errorHandler(err, req, res, next) {
 
 module.exports = {
   ValidationError,
+  AuthenticationError,
   errorHandler,
 };

@@ -21,9 +21,10 @@ app.use(morgan('dev'));
 app.use('/', ROUTES);
 
 app.use((req, res, next) => {
-  const error = new Error('Not Found');
-  error.status(404);
-  next(error);
+  const err = new Error('Not Found');
+  err.status = 404;
+
+  next(err);
 });
 
 app.use(errorHandler);

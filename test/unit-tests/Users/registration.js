@@ -1,6 +1,11 @@
 const should = require('chai').should();
 const request = require('supertest');
+
+/* require models */
 const User = require('../../../models/User.js');
+
+/* require helpers */
+const {postRequest} = require('../../utils/post-request-helpers.js');
 
 let api, user, url;
 
@@ -23,19 +28,13 @@ describe('POST /auth/register', () => {
 
   context('with valid params', () => {
     it('responds with 201', async () => {
-      const res = await request(api)
-        .post(url)
-        .send(user)
-        .set('Accept', 'application/json');
+      const res = await postRequest(api, user, url);
 
       res.status.should.equal(201);
     });
 
     it('creates a new user', async () => {
-      const res = await request(api)
-        .post(url)
-        .send(user)
-        .set('Accept', 'application/json');
+      const res = await postRequest(api, user, url);
 
       const newUser = await User.findOne({email: user.email});
 
@@ -43,10 +42,7 @@ describe('POST /auth/register', () => {
     })
 
     it('returns a json web token', async () => {
-      const res = await request(api)
-        .post(url)
-        .send(user)
-        .set('Accept', 'application/json');
+      const res = await postRequest(api, user, url);
 
       should.exist(res.body.token);
     })
@@ -58,10 +54,7 @@ describe('POST /auth/register', () => {
     });
 
     it('should respond with 400', async () => {
-      const res = await request(api)
-        .post(url)
-        .send(user)
-        .set('Accept', 'application/json');
+      const res = await postRequest(api, user, url);
 
       res.status.should.equal(400);
     })
@@ -74,10 +67,7 @@ describe('POST /auth/register', () => {
     });
 
     it('should respond with 400', async () => {
-      const res = await request(api)
-        .post(url)
-        .send(user)
-        .set('Accept', 'application/json');
+      const res = await postRequest(api, user, url);
 
       res.status.should.equal(400);
     })
