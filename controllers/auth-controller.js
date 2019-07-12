@@ -1,6 +1,6 @@
 const User = require('../models/User.js');
 const {generateUser} = require('../utils/auth-utils.js');
-const {handleError} = require('../utils/errorHandler.js');
+const {ValidationError} = require('../utils/error-utils.js');
 
 async function register(req, res) {
   const {firstName, lastName, email, password} = req.body;
@@ -12,22 +12,13 @@ async function register(req, res) {
         const user = await generateUser(firstName, lastName, email, password);
         res.status(201).send(`${user.firstName} ${user.lastName} created successfully`);
       } else {
-        throw {
-          name: 'Email Taken',
-          message: `${email} is already in use! Please sign into your account, or use a different email.`,
-        };
+        throw new ValidationError('Email already in use!');
       }
     } catch (err) {
-      const error = handleError(err);
-      return res.status(400).json(error);
+      throw err;
     };
   } else {
-    const error = {
-      name: "Invalid Parameters",
-      message: "Please make sure all fields are filled in",
-    };
-
-    return res.status(400).json(error);
+    throw new ValidationError('Please ensure all fields are filled out!');
   }
 };
 
