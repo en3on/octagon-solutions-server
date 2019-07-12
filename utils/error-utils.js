@@ -1,6 +1,7 @@
 class ValidationError extends Error {
-  constructor(message, requirements = undefined) {
+  constructor(status, message, requirements = undefined) {
     super(message);
+    this.status = status;
     this.name = 'ValidationError';
     this.requirements = requirements;
   }

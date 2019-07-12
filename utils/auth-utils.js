@@ -10,13 +10,17 @@ async function generateHash(password) {
   return await bcrypt.hash(password, saltRounds);
 };
 
+async function generateToken({email}) {
+  return 
+};
+
 function validatePassword(password) {
   const regexp = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$/;
 
   const valid = regexp.test(password);
 
   if (!valid) {
-    throw new ValidationError('Please ensure your password satisfies the following', [
+    throw new ValidationError(400, 'Please ensure your password satisfies the following', [
       'At least 1 Uppercase Letter',
       'At least 1 Lowercase Letter',
       'At least 1 Number',
@@ -30,7 +34,7 @@ function validateEmail(email) {
   const valid = regexp.test(email);
 
   if (!valid) {
-    throw new ValidationError('Please enter a valid email address');
+    throw new ValidationError(400, 'Please enter a valid email address');
   }
 }
 
@@ -50,4 +54,5 @@ async function generateUser(firstName, lastName, email, plainPassword) {
 
 module.exports = {
   generateUser,
+  generateToken,
 };
