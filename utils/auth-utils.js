@@ -3,15 +3,23 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User.js');
 const mongoose = require('mongoose');
 
-const {ValidationError} = require('./error-utils.js');
+const {ValidationError, AuthenticationError} = require('./error-utils.js');
 
 async function generateHash(password) {
   const saltRounds = 10;
   return await bcrypt.hash(password, saltRounds);
 };
 
-async function generateToken({email}) {
-  return 
+function generateToken({email}) {
+  return jwt.sign(email, process.env.JWT_SECRET);
+};
+
+async function comparePassword(password, hash) {
+  if (await bcrypt.compare(password, hash)) {
+    return true;
+  }
+
+  throw new AuthenticationError(400, 'Username or Password is incorrect!');
 };
 
 function validatePassword(password) {
@@ -55,4 +63,5 @@ async function generateUser(firstName, lastName, email, plainPassword) {
 module.exports = {
   generateUser,
   generateToken,
+  comparePassword,
 };
