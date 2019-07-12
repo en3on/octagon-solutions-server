@@ -6,7 +6,8 @@
   "scripts": {
     "deploy": "now && now --target production",
     "start": "nodemon api.js",
-    "test": "mocha --recursive"
+    "test": "mocha --recursive",
+    "autotest": "supervisor -q -n exit -x mocha -- -b --recursive"
   },
   "repository": {
     "type": "git",
