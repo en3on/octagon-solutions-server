@@ -47,6 +47,8 @@ describe('POST /auth/register', () => {
         .post(url)
         .send(user)
         .set('Accept', 'application/json');
+
+      should.exist(res.body.token);
     })
   });
 

@@ -11,7 +11,7 @@ async function generateHash(password) {
 };
 
 async function generateToken({email}) {
-  return 
+  return jwt.sign(email, process.env.JWT_SECRET);
 };
 
 function validatePassword(password) {
