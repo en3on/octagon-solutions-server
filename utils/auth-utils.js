@@ -64,7 +64,7 @@ function validatePassword(password) {
  * @param {String} email email address
  */
 function validateEmail(email) {
-  const regexp = /\b[\w.%-]+@[\w.-]+.[a-z]{2,}\b/;
+  const regexp = /\b[\w.%-]+@[\w.-]+\.[a-z]{2,}\b/;
 
   const valid = regexp.test(email);
 
