@@ -61,6 +61,18 @@ describe('POST /auth/register', () => {
     });
   });
 
+  context('with invalid email domain', () => {
+    beforeEach(() => {
+      user.email = 'invalid@mail';
+    });
+
+    it('should respond with 400', async () => {
+      const res = await postRequest(api, user, url);
+
+      res.status.should.equal(400);
+    });
+  });
+
   context('missing paramters', () => {
     beforeEach(() => {
       user.firstName = undefined;
