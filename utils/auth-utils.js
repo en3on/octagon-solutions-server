@@ -14,6 +14,15 @@ function generateToken({email}) {
   return jwt.sign(email, process.env.JWT_SECRET);
 };
 
+function verifyToken(token) {
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET);
+  } catch (err) {
+    throw new AuthenticationError(401,
+        'You are not logged in! Please log in to upload documents!');
+  }
+}
+
 async function comparePassword(password, hash) {
   if (await bcrypt.compare(password, hash)) {
     return true;
@@ -64,4 +73,5 @@ module.exports = {
   generateUser,
   generateToken,
   comparePassword,
+  verifyToken,
 };

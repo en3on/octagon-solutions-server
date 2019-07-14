@@ -30,6 +30,8 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "eslint": "^6.0.1",
+    "eslint-config-google": "^0.13.0",
     "mocha": "^6.1.4",
     "morgan": "^1.9.1",
     "nodemon": "^1.19.1",
