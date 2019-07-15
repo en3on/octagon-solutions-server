@@ -41,8 +41,10 @@ describe('POST /documents/upload', () => {
       fileStatus.status.should.equal(201);
     }).timeout(20000);
 
-    it('responds with json object of documents', async () => {
-      fileStatus.body.should.have.property('documentsArr').with.lengthOf(2);
+    it('saves documents to User Model', async () => {
+      const query = await User.findOne({_id: user.id});
+
+      query.should.have.property('documents').with.lengthOf(2);
     });
 
     context('with no files selected', () => {
@@ -53,6 +55,16 @@ describe('POST /documents/upload', () => {
       it('responds with 400', async () => {
         fileStatus.status.should.equal(400);
       });
+    });
+  });
+
+  context('as a guest', () => {
+    before(async function() {
+      fileStatus = await fileUploadHelper(api, '', url);
+    });
+
+    it('responds with 401', () => {
+      fileStatus.status.should.equal(401);
     });
   });
 });

@@ -13,8 +13,6 @@ async function uploadHandler(req, res, next) {
   const {descriptions} = req.body;
   // console.log({token, descriptions, files});
 
-  const documentsArr = [];
-
   try {
     if (!files) {
       throw new ValidationError(400,
@@ -37,17 +35,14 @@ async function uploadHandler(req, res, next) {
 
       await newDocument.save();
 
-      documentsArr.push(newDocument.id);
+      await user.documents.push(newDocument.id);
     }
-
-    await user.update(
-        {_id: user.id},
-        {$addToSet: {documents: {$each: documentsArr}}}
-    );
 
     await user.save();
 
-    return res.status(201).json({documentsArr});
+    return res.status(201).json({
+      message: 'Documents uploaded successfully!',
+    });
   } catch (err) {
     next(err);
   };
