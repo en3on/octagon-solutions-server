@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 
-const DocumentModel = schema({
+const DocumentSchema = schema({
   _id: schema.Types.ObjectId,
   url: {
     type: String,
@@ -14,4 +14,4 @@ const DocumentModel = schema({
   },
 });
 
-module.exports = ('Document', DocumentModel);
+module.exports = mongoose.model('Document', DocumentSchema);
