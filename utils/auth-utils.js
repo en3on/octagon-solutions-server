@@ -24,6 +24,16 @@ function generateToken({email}) {
   return jwt.sign(email, process.env.JWT_SECRET);
 };
 
+
+function verifyToken(token) {
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET);
+  } catch (err) {
+    throw new AuthenticationError(401,
+        'You are not logged in! Please log in to upload documents!');
+  }
+}
+
 /**
  * compares hased password with plaintext password
  * @param {String} password plaintext password
@@ -96,4 +106,5 @@ module.exports = {
   generateUser,
   generateToken,
   comparePassword,
+  verifyToken,
 };

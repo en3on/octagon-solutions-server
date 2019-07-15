@@ -8,10 +8,15 @@ const request = require('supertest');
  * @return {Object} response object
  */
 async function postRequest(api, payload, url) {
+  const headers = {
+    'Accept': 'application/json',
+    'test': 'true',
+  };
+
   return await request(api)
       .post(url)
       .send(payload)
-      .set('Accept', 'application/json');
+      .set(headers);
 };
 
 module.exports = {

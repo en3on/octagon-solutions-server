@@ -16,7 +16,11 @@ const {errorHandler} = require('./utils/error-utils.js');
 app.use(cors());
 app.use(express.json());
 
-app.use(morgan('dev'));
+app.use(morgan('dev', {
+  skip: function(req, res) {
+    return req.headers.test;
+  },
+}));
 
 app.use('/', ROUTES);
 

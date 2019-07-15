@@ -2,8 +2,8 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 
-const DocumentModel = schema({
-  _id: Schema.Types.ObjectId,
+const DocumentSchema = schema({
+  _id: schema.Types.ObjectId,
   url: {
     type: String,
     required: true,
@@ -14,4 +14,4 @@ const DocumentModel = schema({
   },
 });
 
-module.exports = ('Document', DocumentModel);
+module.exports = mongoose.model('Document', DocumentSchema);

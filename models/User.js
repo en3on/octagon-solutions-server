@@ -20,6 +20,7 @@ const UserSchema = schema({
     type: String,
     required: true,
   },
+  documents: [{type: schema.Types.ObjectId, ref: 'Document'}],
 });
 
 module.exports = mongoose.model('User', UserSchema);
