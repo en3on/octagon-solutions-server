@@ -2,19 +2,20 @@ const should = require('chai').should();
 
 /* require models */
 const User = require('../../../models/User.js');
-const Document = require('../../../models/Document.js');
 
 /* require helpers */
-const {postRequest, fileUploadHelper} = require('../../utils/post-request-helpers.js');
+const {postRequest, fileUploadHelper} =
+  require('../../utils/post-request-helpers.js');
 
 let url;
 let user;
 let api;
 let token;
+let fileStatus;
 
 describe('POST /documents/upload', () => {
-
-  beforeEach(async () => {
+  before(async function() {
+    this.timeout(20000);
     api = require('../../../api.js');
     url = '/documents/upload';
     user = await User.findOne({email: 'test@user.com'});
@@ -22,18 +23,30 @@ describe('POST /documents/upload', () => {
 
     const res = await postRequest(api, user, '/auth/login');
     token = res.body.token;
+
+    console.log('Uploading files...');
+    fileStatus = await fileUploadHelper(api, token, url);
+  });
+
+  beforeEach(async () => {
+
   });
 
   afterEach(async () => {
-    await User.updateOne({_id: user.id}, {documents: []});
     api.close();
+  });
+
+  after(async () => {
+    await User.updateOne({_id: user.id}, {documents: []});
   });
 
   context('as a signed in user', () => {
     it('responds with 201', async () => {
-      const res = await fileUploadHelper(api, token, url);
-
-      res.status.should.equal(201);
+      fileStatus.status.should.equal(201);
     }).timeout(20000);
+
+    it('responds with json object of documents', async () => {
+      fileStatus.body.should.have.property('documentsArr').with.lengthOf(2);
+    });
   });
 });

@@ -11,6 +11,8 @@ async function uploadHandler(req, res, next) {
   const {descriptions} = req.body;
   // console.log({token, descriptions, files});
 
+  const documentsArr = [];
+
   try {
     let user = verifyToken(token);
 
@@ -28,14 +30,17 @@ async function uploadHandler(req, res, next) {
 
       await newDocument.save();
 
-      await user.documents.push(newDocument.id);
+      documentsArr.push(newDocument.id);
     }
+
+    await user.update(
+        {_id: user.id},
+        {$addToSet: {documents: {$each: documentsArr}}}
+    );
 
     await user.save();
 
-    return res.status(201).json({
-      message: 'Documents saved successfully!',
-    });
+    return res.status(201).json({documentsArr});
   } catch (err) {
     next(err);
   };
