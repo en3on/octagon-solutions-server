@@ -1,5 +1,4 @@
 const should = require('chai').should();
-const request = require('supertest');
 
 // needed to create id
 const mongoose = require('mongoose');
@@ -10,14 +9,16 @@ const User = require('../../../models/User.js');
 /* require helpers */
 const {postRequest} = require('../../utils/post-request-helpers.js');
 
-let api, user, url;
+let api;
+let url;
+let user;
 
 describe('POST /auth/login', () => {
   beforeEach(async () => {
     api = require('../../../api.js');
     url = '/auth/login';
     user = {
-      _id: mongoose.Types.ObjectId(),
+      _id: new mongoose.Types.ObjectId(),
       firstName: 'Bill',
       lastName: 'Clinton',
       email: 'billc@whitehouse.com',
@@ -45,6 +46,4 @@ describe('POST /auth/login', () => {
       should.exist(res.body.token);
     });
   });
-
-
 });
