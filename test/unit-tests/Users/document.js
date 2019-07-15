@@ -28,10 +28,6 @@ describe('POST /documents/upload', () => {
     fileStatus = await fileUploadHelper(api, token, url);
   });
 
-  beforeEach(async () => {
-
-  });
-
   afterEach(async () => {
     api.close();
   });
@@ -47,6 +43,16 @@ describe('POST /documents/upload', () => {
 
     it('responds with json object of documents', async () => {
       fileStatus.body.should.have.property('documentsArr').with.lengthOf(2);
+    });
+
+    context('with no files selected', () => {
+      before(async function() {
+        fileStatus = await fileUploadHelper(api, token, url, false);
+      });
+
+      it('responds with 400', async () => {
+        fileStatus.status.should.equal(400);
+      });
     });
   });
 });
