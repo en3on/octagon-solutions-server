@@ -5,7 +5,14 @@ node_modules
 .env
 now.json
 
-npm-debug.log*
+# logs
+**/*.log
 
 # lock-files
 package-lock.json
+
+# jsdoc
+out/**
+
+# eslint
+.eslint*

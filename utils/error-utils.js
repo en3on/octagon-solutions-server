@@ -28,7 +28,7 @@ function errorHandler(err, req, res, next) {
       name: err.name,
       message: err.message,
       requirements: (err.requirements || undefined),
-    }
+    },
   });
 }
 
