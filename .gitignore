@@ -5,13 +5,16 @@ node_modules
 .env
 now.json
 
-# log files
-npm-debug.log*
+# logs
+**/*.log
 
 # lock-files
 package-lock.json
+yarn.lock
+
+# jsdoc
+out/**
 
 # eslint
-.eslintrc.js
-yarn.lock
+.eslint.*
 
