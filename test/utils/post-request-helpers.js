@@ -19,19 +19,25 @@ async function postRequest(api, payload, url) {
       .set(headers);
 };
 
-async function fileUploadHelper(api, token, url) {
+async function fileUploadHelper(api, token, url, send = true) {
   const headers = {
     'Content-Type': 'application/x-www-form-urlencoded',
     'token': token,
-    'descriptions': ['test 1', 'test 2', 'test 3', 'test 4'],
+    'descriptions': ['test 1', 'test 2'],
   };
 
-  return await request(api)
-      .post(url)
-      .field('descriptions', ['file 1', 'file 2'])
-      .attach('documents', 'test/utils/files/1.txt')
-      .attach('documents', 'test/utils/files/2.txt')
-      .set(headers);
+  if (send) {
+    return await request(api)
+        .post(url)
+        .field('descriptions', ['file 1', 'file 2'])
+        .attach('documents', 'test/utils/files/1.txt')
+        .attach('documents', 'test/utils/files/2.txt')
+        .set(headers);
+  } else {
+    return await request(api)
+        .post(url)
+        .set(headers);
+  };
 };
 
 module.exports = {
