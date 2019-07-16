@@ -28,7 +28,9 @@ async function uploadHandler(req, res, next) {
       const newDocument = new Document({
         _id: new mongoose.Types.ObjectId(),
         url: resp.secure_url,
+        public_id: resp.public_id,
         description: descriptions[i],
+        time_created: new Date(resp.created_at),
       });
 
       await newDocument.save();

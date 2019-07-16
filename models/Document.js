@@ -8,10 +8,18 @@ const DocumentSchema = schema({
     type: String,
     required: true,
   },
+  public_id: {
+    type: String,
+    required: true,
+  },
   description: {
     type: String,
     required: true,
   },
+  time_created: {
+    type: Date,
+    required: true,
+  }
 });
 
 module.exports = mongoose.model('Document', DocumentSchema);
