@@ -36,7 +36,6 @@ after(async () => {
 });
 
 describe('POST /documents/upload', () => {
-
   afterEach(async () => {
     api.close();
   });
@@ -77,7 +76,7 @@ describe('POST /documents/upload', () => {
 
 describe('DELETE /documents/:public_id', () => {
   beforeEach(async function() {
-    user = await User.findOne({email: user.email}).populate('documents');
+    user = await User.findOne({email: 'test@user.com'}).populate('documents');
 
     url = '/documents/delete';
 
@@ -86,11 +85,50 @@ describe('DELETE /documents/:public_id', () => {
     deleteStatus = await deleteFileHelper(api, token, document.public_id, url);
   });
 
+  afterEach(async function() {
+    user = await User.findOne({email: user.email}).populate('documents');
+
+    const modifiedDocument = user.documents[0];
+
+    modifiedDocument.delete = false;
+
+    modifiedDocument.save();
+  });
+
   context('as a signed in user', () => {
     context('as the document owner', () => {
       it('responds with 200', async () => {
         deleteStatus.status.should.equal(200);
-      })
-    })
-  })
+      });
+
+      it('changes document.delete to true', async () => {
+        user = await User.findOne({email: user.email}).populate('documents');
+
+        user.documents[0].delete.should.equal(true);
+      });
+    });
+
+    context('not as the document owner', () => {
+      before(async function() {
+        user = await User.findOne({email: 'test2@user.com'});
+        user.password = 'TestPass123';
+
+        const otherUser = await User.findOne({email: 'test@user.com'}).populate('documents');
+        const otherDocument = otherUser.documents[0];
+
+        const {public_id} = otherDocument;
+
+        const res = await postRequest(api, user, '/auth/login');
+
+        token = res.body.token;
+
+        deleteStatus =
+          await deleteFileHelper(api, token, public_id, url);
+      });
+
+      it('responds with 404', () => {
+        deleteFileHelper.status.should.equal(404);
+      });
+    });
+  });
 });
