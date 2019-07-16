@@ -7,6 +7,7 @@ async function deleteFileHelper(api, token, public_id, url) {
 
   return await request(api)
     .del(url + `/${public_id}`)
+    .set(headers);
 };
 
 module.exports = deleteFileHelper;

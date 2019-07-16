@@ -48,6 +48,35 @@ async function uploadHandler(req, res, next) {
   };
 }
 
+async function deleteHandler(req, res, next) {
+  try {
+    const {token} = req.headers;
+    const {public_id} = req.params;
+
+    let user = verifyToken(token);
+    user = await User.findOne({email: user}).populate('documents');
+
+    const document = user.documents.find((doc) => doc.public_id === public_id);
+
+    if (document === null) {
+      const error = new Error('Not Found!');
+      error.status(404);
+
+      throw error;
+    }
+
+    document.delete = true;
+
+    await document.save();
+
+    return res.status(200).send('Document successfully scheduled for deletion');
+
+  } catch (err) {
+    next(err);
+  };
+};
+
 module.exports = {
   uploadHandler,
+  deleteHandler,
 };

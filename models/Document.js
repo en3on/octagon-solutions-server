@@ -19,7 +19,11 @@ const DocumentSchema = schema({
   time_created: {
     type: Date,
     required: true,
-  }
+  },
+  delete: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model('Document', DocumentSchema);
