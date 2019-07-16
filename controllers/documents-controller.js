@@ -4,7 +4,6 @@ const {verifyToken} = require('../utils/auth-utils.js');
 const mongoose = require('mongoose');
 
 const {ValidationError} = require('../utils/error-utils.js');
-
 const uploadFile = require('../utils/file-uploader.js');
 
 async function uploadHandler(req, res, next) {
@@ -18,7 +17,6 @@ async function uploadHandler(req, res, next) {
       throw new ValidationError(400,
           'No files were provided! Please try again!');
     }
-
     let user = verifyToken(token);
 
     user = await User.findOne({email: user});
