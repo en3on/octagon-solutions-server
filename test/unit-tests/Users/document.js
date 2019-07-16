@@ -6,35 +6,41 @@ const User = require('../../../models/User.js');
 /* require helpers */
 const {postRequest, fileUploadHelper} =
   require('../../utils/post-request-helpers.js');
+const deleteFileHelper = require('../../utils/delete-request-helper.js');
 
 let url;
 let user;
 let api;
 let token;
 let fileStatus;
+let documentCount;
+
+before(async function() {
+  this.timeout(20000);
+  api = require('../../../api.js');
+  url = '/documents/upload';
+  user = await User.findOne({email: 'test@user.com'});
+  user.password = 'TestPass123';
+
+  documentCount = user.documents.length;
+
+  const res = await postRequest(api, user, '/auth/login');
+  token = res.body.token;
+
+  console.log('Uploading files...');
+  fileStatus = await fileUploadHelper(api, token, url);
+});
+
+after(async () => {
+  await User.updateOne({_id: user.id}, {documents: []});
+});
 
 describe('POST /documents/upload', () => {
-  before(async function() {
-    this.timeout(20000);
-    api = require('../../../api.js');
-    url = '/documents/upload';
-    user = await User.findOne({email: 'test@user.com'});
-    user.password = 'TestPass123';
-
-    const res = await postRequest(api, user, '/auth/login');
-    token = res.body.token;
-
-    console.log('Uploading files...');
-    fileStatus = await fileUploadHelper(api, token, url);
-  });
 
   afterEach(async () => {
     api.close();
   });
 
-  after(async () => {
-    await User.updateOne({_id: user.id}, {documents: []});
-  });
 
   context('as a signed in user', () => {
     it('responds with 201', async () => {
@@ -44,7 +50,7 @@ describe('POST /documents/upload', () => {
     it('saves documents to User Model', async () => {
       const query = await User.findOne({_id: user.id});
 
-      query.should.have.property('documents').with.lengthOf(2);
+      query.should.have.property('documents').with.lengthOf(documentCount + 2);
     });
 
     context('with no files selected', () => {
@@ -67,4 +73,24 @@ describe('POST /documents/upload', () => {
       fileStatus.status.should.equal(401);
     });
   });
+});
+
+describe('DELETE /documents/:public_id', () => {
+  beforeEach(async function() {
+    user = await User.findOne({email: user.email}).populate('documents');
+
+    url = '/documents/delete';
+
+    const document = user.documents[0];
+
+    deleteStatus = await deleteFileHelper(api, token, document.public_id, url);
+  });
+
+  context('as a signed in user', () => {
+    context('as the document owner', () => {
+      it('responds with 200', async () => {
+        deleteStatus.status.should.equal(200);
+      })
+    })
+  })
 });
