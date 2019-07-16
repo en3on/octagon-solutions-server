@@ -10,9 +10,11 @@ now.json
 
 # lock-files
 package-lock.json
+yarn.lock
 
 # jsdoc
 out/**
 
 # eslint
-.eslint*
+.eslint.*
+

@@ -5,7 +5,7 @@ const User = require('../../../models/User.js');
 const Document = require('../../../models/Document.js');
 
 /* require helpers */
-const {postRequest} = require('../../utils/post-request-helpers.js');
+const {postRequest, fileUploadHelper} = require('../../utils/post-request-helpers.js');
 
 let url;
 let user;
@@ -24,16 +24,16 @@ describe('POST /documents/upload', () => {
     token = res.body.token;
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await User.updateOne({_id: user.id}, {documents: []});
     api.close();
   });
 
   context('as a signed in user', () => {
     it('responds with 201', async () => {
-      const payload = {token: token};
-      const res = await postRequest(api, payload, url);
+      const res = await fileUploadHelper(api, token, url);
 
       res.status.should.equal(201);
-    });
+    }).timeout(20000);
   });
 });
