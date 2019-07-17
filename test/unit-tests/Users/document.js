@@ -113,7 +113,9 @@ describe('DELETE /documents/:publicId', () => {
         user = await User.findOne({email: 'test2@user.com'});
         user.password = 'TestPass123';
 
-        const otherUser = await User.findOne({email: 'test@user.com'}).populate('documents');
+        const otherUser =
+            await User.findOne({email: 'test@user.com'}).populate('documents');
+
         const otherDocument = otherUser.documents[0];
 
         const {publicId} = otherDocument;
@@ -127,7 +129,7 @@ describe('DELETE /documents/:publicId', () => {
       });
 
       it('responds with 404', () => {
-        deleteFileHelper.status.should.equal(404);
+        deleteStatus.status.should.equal(404);
       });
     });
   });

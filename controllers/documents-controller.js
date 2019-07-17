@@ -55,21 +55,21 @@ async function deleteHandler(req, res, next) {
     let user = verifyToken(token);
     user = await User.findOne({email: user}).populate('documents');
 
-    const document = user.documents.find((doc) => doc.publicId === publicId);
+    const foundDocument =
+        user.documents.find((doc) => doc.publicId === publicId);
 
-    if (document === null) {
+    if (!foundDocument) {
       const error = new Error('Not Found!');
-      error.status(404);
+      error.status = 404;
 
       throw error;
     }
 
-    document.delete = true;
+    foundDocument.delete = true;
 
-    await document.save();
+    await foundDocument.save();
 
     return res.status(200).send('Document successfully scheduled for deletion');
-
   } catch (err) {
     next(err);
   };
