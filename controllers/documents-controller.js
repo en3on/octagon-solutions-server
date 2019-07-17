@@ -63,6 +63,11 @@ async function deleteHandler(req, res, next) {
       error.status = 404;
 
       throw error;
+    } else if (foundDocument.delete) {
+      const error = new Error('Document already marked for deletion!');
+      error.status = 400;
+
+      throw error;
     }
 
     foundDocument.delete = true;

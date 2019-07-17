@@ -41,7 +41,6 @@ describe('POST /documents/upload', () => {
     api.close();
   });
 
-
   context('as a signed in user', () => {
     it('responds with 201', async () => {
       fileStatus.status.should.equal(201);
@@ -109,7 +108,7 @@ describe('DELETE /documents/:publicId', () => {
       });
 
       context('when a document is already marked for deletion', () => {
-        before(async () => {
+        beforeEach(async () => {
           const markedDocument = user.documents[1];
           markedDocument.delete = true;
           markedDocument.save();
@@ -120,6 +119,10 @@ describe('DELETE /documents/:publicId', () => {
 
         it('should return 400', () => {
           deleteStatus.status.should.equal(400);
+        });
+
+        after(() => {
+          console.log('After deletion check');
         });
       });
     });
