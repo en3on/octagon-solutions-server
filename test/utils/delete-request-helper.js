@@ -2,7 +2,7 @@ const request = require('supertest');
 
 async function deleteFileHelper(api, token, publicId, url) {
   const headers = {
-    'token': token,
+    'token': token || null,
     'test': true,
   };
 

@@ -2,6 +2,7 @@ const should = require('chai').should();
 
 /* require models */
 const User = require('../../../models/User.js');
+const Document = require('../../../models/Document.js');
 
 /* require helpers */
 const {postRequest, fileUploadHelper} =
@@ -106,6 +107,21 @@ describe('DELETE /documents/:publicId', () => {
 
         user.documents[0].delete.should.equal(true);
       });
+
+      context('when a document is already marked for deletion', () => {
+        before(async () => {
+          const markedDocument = user.documents[1];
+          markedDocument.delete = true;
+          markedDocument.save();
+
+          deleteStatus =
+              await deleteFileHelper(api, token, markedDocument.publicId, url);
+        });
+
+        it('should return 400', () => {
+          deleteStatus.status.should.equal(400);
+        });
+      });
     });
 
     context('not as the document owner', () => {
@@ -131,6 +147,35 @@ describe('DELETE /documents/:publicId', () => {
       it('responds with 404', () => {
         deleteStatus.status.should.equal(404);
       });
+    });
+  });
+
+  let otherDocument;
+
+  context('as a guest', () => {
+    before(async function() {
+      token = undefined;
+
+      const otherUser =
+          await User.findOne({email: 'test@user.com'}).populate('documents');
+
+      otherDocument = otherUser.documents[0];
+
+      const {publicId} = otherDocument;
+
+      deleteStatus =
+        await deleteFileHelper(api, token, publicId, url);
+    });
+
+    it('responds with 401', () => {
+      deleteStatus.status.should.equal(401);
+    });
+
+    it('does not flag document for deletion', async () => {
+      const testDocument =
+        await Document.findOne({_id: otherDocument.id});
+
+      testDocument.delete.should.equal(false);
     });
   });
 });
