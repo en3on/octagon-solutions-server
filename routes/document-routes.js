@@ -6,8 +6,10 @@ const storage = multer.memoryStorage();
 const upload = multer({storage});
 
 /* import controller */
-const {uploadHandler} = require('../controllers/documents-controller');
+const {uploadHandler, deleteHandler} = require('../controllers/documents-controller');
 
 router.post('/upload', upload.array('documents'), uploadHandler);
+
+router.delete('/delete/:publicId', deleteHandler);
 
 module.exports = router;

@@ -10,7 +10,6 @@ async function uploadHandler(req, res, next) {
   const {token} = req.headers;
   const {files} = req;
   const {descriptions} = req.body;
-  // console.log({token, descriptions, files});
 
   try {
     if (!files) {
@@ -28,7 +27,9 @@ async function uploadHandler(req, res, next) {
       const newDocument = new Document({
         _id: new mongoose.Types.ObjectId(),
         url: resp.secure_url,
+        publicId: resp.public_id,
         description: descriptions[i],
+        timeCreated: new Date(resp.created_at),
       });
 
       await newDocument.save();
@@ -46,6 +47,40 @@ async function uploadHandler(req, res, next) {
   };
 }
 
+async function deleteHandler(req, res, next) {
+  try {
+    const {token} = req.headers;
+    const {publicId} = req.params;
+
+    let user = verifyToken(token);
+    user = await User.findOne({email: user}).populate('documents');
+
+    const foundDocument =
+        user.documents.find((doc) => doc.publicId === publicId);
+
+    if (!foundDocument) {
+      const error = new Error('Not Found!');
+      error.status = 404;
+
+      throw error;
+    } else if (foundDocument.delete) {
+      const error = new Error('Document already marked for deletion!');
+      error.status = 400;
+
+      throw error;
+    }
+
+    foundDocument.delete = true;
+
+    await foundDocument.save();
+
+    return res.status(200).send('Document successfully scheduled for deletion');
+  } catch (err) {
+    next(err);
+  };
+};
+
 module.exports = {
   uploadHandler,
+  deleteHandler,
 };
