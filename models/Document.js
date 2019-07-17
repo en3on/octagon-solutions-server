@@ -8,7 +8,7 @@ const DocumentSchema = schema({
     type: String,
     required: true,
   },
-  public_id: {
+  publicId: {
     type: String,
     required: true,
   },
@@ -16,7 +16,7 @@ const DocumentSchema = schema({
     type: String,
     required: true,
   },
-  time_created: {
+  timeCreated: {
     type: Date,
     required: true,
   },

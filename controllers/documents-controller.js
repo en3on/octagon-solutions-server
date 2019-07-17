@@ -10,7 +10,6 @@ async function uploadHandler(req, res, next) {
   const {token} = req.headers;
   const {files} = req;
   const {descriptions} = req.body;
-  // console.log({token, descriptions, files});
 
   try {
     if (!files) {
@@ -28,9 +27,9 @@ async function uploadHandler(req, res, next) {
       const newDocument = new Document({
         _id: new mongoose.Types.ObjectId(),
         url: resp.secure_url,
-        public_id: resp.public_id,
+        publicId: resp.public_id,
         description: descriptions[i],
-        time_created: new Date(resp.created_at),
+        timeCreated: new Date(resp.created_at),
       });
 
       await newDocument.save();
@@ -51,12 +50,12 @@ async function uploadHandler(req, res, next) {
 async function deleteHandler(req, res, next) {
   try {
     const {token} = req.headers;
-    const {public_id} = req.params;
+    const {publicId} = req.params;
 
     let user = verifyToken(token);
     user = await User.findOne({email: user}).populate('documents');
 
-    const document = user.documents.find((doc) => doc.public_id === public_id);
+    const document = user.documents.find((doc) => doc.publicId === publicId);
 
     if (document === null) {
       const error = new Error('Not Found!');

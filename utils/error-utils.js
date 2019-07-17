@@ -1,3 +1,5 @@
+const DEBUG = false;
+
 class ValidationError extends Error {
   constructor(status, message, requirements = undefined) {
     super(message);
@@ -18,9 +20,11 @@ class AuthenticationError extends Error {
 }
 
 function errorHandler(err, req, res, next) {
-  // console.error('AN ERROR HAS OCCURRED:', err.name);
-  // console.error('Message:', err.message);
-  // console.error('Stack Trace:', err.stack);
+  if (DEBUG) {
+    console.error('AN ERROR HAS OCCURRED:', err.name);
+    console.error('Message:', err.message);
+    console.error('Stack Trace:', err.stack);
+  };
 
   res.status(err.status || 500);
   res.json({

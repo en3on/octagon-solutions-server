@@ -10,6 +10,6 @@ const {uploadHandler, deleteHandler} = require('../controllers/documents-control
 
 router.post('/upload', upload.array('documents'), uploadHandler);
 
-router.delete('/delete/:public_id', deleteHandler);
+router.delete('/delete/:publicId', deleteHandler);
 
 module.exports = router;

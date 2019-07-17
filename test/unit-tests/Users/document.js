@@ -74,7 +74,7 @@ describe('POST /documents/upload', () => {
   });
 });
 
-describe('DELETE /documents/:public_id', () => {
+describe('DELETE /documents/:publicId', () => {
   beforeEach(async function() {
     user = await User.findOne({email: 'test@user.com'}).populate('documents');
 
@@ -82,7 +82,7 @@ describe('DELETE /documents/:public_id', () => {
 
     const document = user.documents[0];
 
-    deleteStatus = await deleteFileHelper(api, token, document.public_id, url);
+    deleteStatus = await deleteFileHelper(api, token, document.publicId, url);
   });
 
   afterEach(async function() {
@@ -116,14 +116,14 @@ describe('DELETE /documents/:public_id', () => {
         const otherUser = await User.findOne({email: 'test@user.com'}).populate('documents');
         const otherDocument = otherUser.documents[0];
 
-        const {public_id} = otherDocument;
+        const {publicId} = otherDocument;
 
         const res = await postRequest(api, user, '/auth/login');
 
         token = res.body.token;
 
         deleteStatus =
-          await deleteFileHelper(api, token, public_id, url);
+          await deleteFileHelper(api, token, publicId, url);
       });
 
       it('responds with 404', () => {
