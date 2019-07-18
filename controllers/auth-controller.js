@@ -7,6 +7,8 @@ const {
 
 const {ValidationError} = require('../utils/error-utils.js');
 
+const Mailer = require('../utils/mailer.js');
+
 /**
  * register function for users
  * @param {Object} req request object for express
@@ -83,7 +85,20 @@ async function login(req, res, next) {
   };
 };
 
+async function forgotPassword(req, res, next) {
+  try {
+    const user = req.body.user;
+
+    await new Mailer(user).forgotPassword();
+  } catch (err) {
+    next(err);
+  };
+
+  res.status(200).send('Email sent successfully, please check your inbox');
+};
+
 module.exports = {
   register,
   login,
+  forgotPassword,
 };
