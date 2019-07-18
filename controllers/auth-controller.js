@@ -63,6 +63,13 @@ async function login(req, res, next) {
     const {email, password: plainPassword} = req.body;
     const foundUser = await User.findOne({email});
 
+    if (foundUser === null) {
+      const error = new Error('User Not Found!');
+      error.status = 404;
+
+      throw error;
+    }
+
     await comparePassword(plainPassword, foundUser.password);
 
     const token = await generateToken(foundUser);
