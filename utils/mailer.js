@@ -27,7 +27,9 @@ class Mailer {
   async forgotPassword() {
     const user = await this.getUser();
 
-    const link = 'testlink.com';
+    const {resetPassLink} = user;
+
+    const link = 'octagon-solutions.com.au/forgot/' + resetPassLink.value;
 
     this.data.subject = 'Reset your password';
     this.data.text = `Hey ${user.firstName}!\nClick the link to reset your password!\n${link}\nIf you did not request a password change, please ignore this email.`;

@@ -20,6 +20,10 @@ const UserSchema = schema({
     type: String,
     required: true,
   },
+  resetPassLink: {
+    type: Object,
+    default: null,
+  },
   documents: [{type: schema.Types.ObjectId, ref: 'Document'}],
 });
 

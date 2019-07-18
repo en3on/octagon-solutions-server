@@ -3,6 +3,7 @@ const {
   generateUser,
   generateToken,
   comparePassword,
+  generateRandomString,
 } = require('../utils/auth-utils.js');
 
 const {ValidationError} = require('../utils/error-utils.js');
@@ -89,8 +90,26 @@ async function forgotPassword(req, res, next) {
   try {
     const user = req.body.user;
 
+    console.log({user});
+
+    const resetPassLink = {
+      value: generateRandomString(),
+      expiry: new Date(Date.now() + 1800000),
+    };
+
+    console.log({resetPassLink});
+
+    await User.findOneAndUpdate({email: user.email}, {resetPassLink: resetPassLink}, function(err, doc) {
+      if (err) console.log({err});
+    });
+
+    const updatedUser = await User.findOne({email: user.email});
+
+    console.log({updatedUser});
+
     await new Mailer(user).forgotPassword();
   } catch (err) {
+    console.log(err);
     next(err);
   };
 

@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User.js');
 const mongoose = require('mongoose');
+const randomString = require('randomstring');
 
 const {ValidationError, AuthenticationError} = require('./error-utils.js');
 
@@ -101,9 +102,17 @@ async function generateUser(user) {
   return await newUser.save();
 };
 
+function generateRandomString() {
+  return randomString.generate({
+    length: 16,
+    charset: 'alphanumeric',
+  });
+}
+
 module.exports = {
   generateUser,
   generateToken,
   comparePassword,
   verifyToken,
+  generateRandomString,
 };
