@@ -24,7 +24,6 @@ function generateToken({email}) {
   return jwt.sign(email, process.env.JWT_SECRET);
 };
 
-
 function verifyToken(token) {
   try {
     return jwt.verify(token, process.env.JWT_SECRET);
