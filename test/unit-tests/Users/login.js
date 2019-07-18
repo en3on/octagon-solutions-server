@@ -46,4 +46,16 @@ describe('POST /auth/login', () => {
       should.exist(res.body.token);
     });
   });
+
+  context('as a user that doesn\'t exist', () => {
+    beforeEach(() => {
+      user.email = 'idontexist@temp-mail.org';
+    });
+
+    it('responds with 404', async () => {
+      const res = await postRequest(api, user, url);
+
+      res.status.should.equal(404);
+    });
+  });
 });
