@@ -6,6 +6,13 @@ const mongoose = require('mongoose');
 const {ValidationError} = require('../utils/error-utils.js');
 const uploadFile = require('../utils/file-uploader.js');
 
+/**
+ * Creates new Document object and assigns it to a validated user
+ * @param {Object} req Post request
+ * @param {Object} res Response object
+ * @param {Function} next Error Handler
+ * @return {Obejct} Server response object
+ */
 async function uploadHandler(req, res, next) {
   const {token} = req.headers;
   const {files} = req;
@@ -47,6 +54,13 @@ async function uploadHandler(req, res, next) {
   };
 }
 
+/**
+ * Handles deletion of a user's document for a validated user
+ * @param {Object} req Post request
+ * @param {Object} res Response object
+ * @param {Function} next Error Handler
+ * @return {Obejct} Server response object
+ */
 async function deleteHandler(req, res, next) {
   try {
     const {token} = req.headers;

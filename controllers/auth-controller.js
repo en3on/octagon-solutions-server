@@ -86,6 +86,14 @@ async function login(req, res, next) {
   };
 };
 
+/**
+ * Assigns a resetPassLink object to
+ * User model and sends out mail with reset link
+ * @param {Object} req Post request
+ * @param {Object} res Server response
+ * @param {Function} next Error handler
+ * @return {Object} Response object
+ */
 async function forgotPassword(req, res, next) {
   try {
     const user = req.body.user;
@@ -99,9 +107,12 @@ async function forgotPassword(req, res, next) {
 
     console.log({resetPassLink});
 
-    await User.findOneAndUpdate({email: user.email}, {resetPassLink: resetPassLink}, function(err, doc) {
-      if (err) console.log({err});
-    });
+    await User.findOneAndUpdate(
+        {email: user.email},
+        {resetPassLink: resetPassLink},
+        (err, doc) => {
+          if (err) console.log({err});
+        });
 
     const updatedUser = await User.findOne({email: user.email});
 
@@ -113,7 +124,8 @@ async function forgotPassword(req, res, next) {
     next(err);
   };
 
-  res.status(200).send('Email sent successfully, please check your inbox');
+  return res.status(200)
+      .send('Email sent successfully, please check your inbox');
 };
 
 module.exports = {
