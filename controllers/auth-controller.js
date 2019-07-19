@@ -1,9 +1,14 @@
 const User = require('../models/User.js');
+const ResetPassLink = require('../models/ResetPassLink.js');
+
 const {
   generateUser,
   generateToken,
+  generateHash,
   comparePassword,
-  generateRandomString,
+  generateAuthString,
+  validateAuthString,
+  generateResetPassLink,
 } = require('../utils/auth-utils.js');
 
 const {ValidationError} = require('../utils/error-utils.js');
@@ -96,29 +101,26 @@ async function login(req, res, next) {
  */
 async function forgotPassword(req, res, next) {
   try {
-    const user = req.body.user;
+    const user = await User.findOne({email: req.body.user.email});
 
     console.log({user});
 
-    const resetPassLink = {
-      value: generateRandomString(),
-      expiry: new Date(Date.now() + 1800000),
-    };
+    const resetPassLink = generateResetPassLink(user);
+
+    await resetPassLink.save();
 
     console.log({resetPassLink});
 
     await User.findOneAndUpdate(
         {email: user.email},
-        {resetPassLink: resetPassLink},
-        (err, doc) => {
-          if (err) console.log({err});
-        });
+        {resetPassLink: resetPassLink.id},
+    );
 
     const updatedUser = await User.findOne({email: user.email});
 
     console.log({updatedUser});
 
-    await new Mailer(user).forgotPassword();
+    await new Mailer(user, resetPassLink).forgotPassword();
   } catch (err) {
     console.log(err);
     next(err);
@@ -128,8 +130,27 @@ async function forgotPassword(req, res, next) {
       .send('Email sent successfully, please check your inbox');
 };
 
+async function resetPassword(req, res, next) {
+  const {authString, newPassword} = req.body;
+
+  try {
+    const foundUser = await validateAuthString(authString);
+
+    console.log({foundUser});
+
+    const password = await generateHash(newPassword);
+
+    await User.findOneAndUpdate({email: foundUser.email}, {password});
+
+    await ResetPassLink.deleteOne({value: authString});
+  } catch (err) {
+    next(err);
+  };
+};
+
 module.exports = {
   register,
   login,
   forgotPassword,
+  resetPassword,
 };

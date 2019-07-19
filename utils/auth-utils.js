@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User.js');
+const ResetPassLink = require('../models/ResetPassLink.js');
 const mongoose = require('mongoose');
 const randomString = require('randomstring');
 
@@ -102,17 +103,49 @@ async function generateUser(user) {
   return await newUser.save();
 };
 
-function generateRandomString() {
+function generateAuthString() {
   return randomString.generate({
     length: 16,
     charset: 'alphanumeric',
   });
 }
 
+async function validateAuthString(authStr) {
+  const resetPassLink = await ResetPassLink.findOne({value: authStr}).populate('User');
+
+  if (resetPassLink === null) {
+    const err = new Error('Link not found!');
+    err.status = 404;
+
+    throw err;
+  }
+
+  if (resetPassLink.expiry < new Date(Date.now())) {
+    const err = new Error('Link Expired!');
+    err.status = 403;
+  };
+
+  return await User.findOne({_id: resetPassLink.userId});
+};
+
+function generateResetPassLink(user) {
+
+  console.log({user});
+
+  return new ResetPassLink({
+    _id: new mongoose.Types.ObjectId(),
+    value: generateAuthString(),
+    expiry: new Date(Date.now() + 1800000),
+    userId: user.id,
+  });
+};
+
 module.exports = {
   generateUser,
   generateToken,
+  generateHash,
   comparePassword,
   verifyToken,
-  generateRandomString,
+  generateResetPassLink,
+  validateAuthString,
 };
