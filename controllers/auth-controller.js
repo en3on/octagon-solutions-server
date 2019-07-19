@@ -3,9 +3,12 @@ const {
   generateUser,
   generateToken,
   comparePassword,
+  generateRandomString,
 } = require('../utils/auth-utils.js');
 
 const {ValidationError} = require('../utils/error-utils.js');
+
+const Mailer = require('../utils/mailer.js');
 
 /**
  * register function for users
@@ -83,7 +86,50 @@ async function login(req, res, next) {
   };
 };
 
+/**
+ * Assigns a resetPassLink object to
+ * User model and sends out mail with reset link
+ * @param {Object} req Post request
+ * @param {Object} res Server response
+ * @param {Function} next Error handler
+ * @return {Object} Response object
+ */
+async function forgotPassword(req, res, next) {
+  try {
+    const user = req.body.user;
+
+    console.log({user});
+
+    const resetPassLink = {
+      value: generateRandomString(),
+      expiry: new Date(Date.now() + 1800000),
+    };
+
+    console.log({resetPassLink});
+
+    await User.findOneAndUpdate(
+        {email: user.email},
+        {resetPassLink: resetPassLink},
+        (err, doc) => {
+          if (err) console.log({err});
+        });
+
+    const updatedUser = await User.findOne({email: user.email});
+
+    console.log({updatedUser});
+
+    await new Mailer(user).forgotPassword();
+  } catch (err) {
+    console.log(err);
+    next(err);
+  };
+
+  return res.status(200)
+      .send('Email sent successfully, please check your inbox');
+};
+
 module.exports = {
   register,
   login,
+  forgotPassword,
 };
