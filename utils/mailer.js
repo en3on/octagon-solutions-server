@@ -212,8 +212,6 @@ class Mailer {
   `;
     mailgun.messages().send(this.data, function(err, body) {
       if (err) throw err;
-
-      console.log('Message Sent!');
     });
   }
 }

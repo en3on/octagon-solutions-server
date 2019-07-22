@@ -102,19 +102,12 @@ async function forgotPassword(req, res, next) {
   try {
     const user = await User.findOne({email: req.body.email});
 
-    console.log('foundUser for forgot', {user});
-
     const resetPassLink = generateResetPassLink(user);
-
-    console.log('Saving resetpasslink');
 
     await resetPassLink.save();
 
-    console.log('resetpasslink saved', {resetPassLink});
-
     await new Mailer(user, resetPassLink).forgotPassword();
   } catch (err) {
-    console.log(err);
     next(err);
   };
 
@@ -127,8 +120,6 @@ async function resetPassword(req, res, next) {
 
   try {
     const foundUser = await validateAuthString(authString);
-
-    console.log({foundUser});
 
     const password = await generateHash(newPassword);
 
