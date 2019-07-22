@@ -102,11 +102,7 @@ async function getUserDocuments(req, res, next) {
     let user = verifyToken(token);
     user = await User.findOne({email: user});
 
-    console.log(user.id);
-
     const requestedUser = await User.findOne({id: userId}).populate('documents');
-
-    console.log(requestedUser.id);
 
     if (user.id !== requestedUser.id && !user.admin) {
       throw new AuthenticationError(403,

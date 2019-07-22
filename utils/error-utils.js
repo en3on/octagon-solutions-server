@@ -1,4 +1,4 @@
-const DEBUG = true;
+const DEBUG = false;
 
 class ValidationError extends Error {
   constructor(status, message, requirements = undefined) {
