@@ -6,6 +6,7 @@ const {
   generateToken,
   generateHash,
   comparePassword,
+  validatePassword,
   validateAuthString,
   generateResetPassLink,
 } = require('../utils/auth-utils.js');
@@ -120,6 +121,8 @@ async function resetPassword(req, res, next) {
 
   try {
     const foundUser = await validateAuthString(authString);
+
+    validatePassword(password);
 
     const password = await generateHash(newPassword);
 

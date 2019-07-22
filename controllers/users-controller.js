@@ -9,7 +9,7 @@ const {ValidationError, AuthenticationError}
     = require('../utils/error-utils.js');
 
 async function changeUserSettingsHandler(req, res, next) {
-  const {token} = token;
+  const {token} = req.headers;
   const {firstName, lastName, email, password} = req.body;
 
   try {
@@ -21,7 +21,6 @@ async function changeUserSettingsHandler(req, res, next) {
         throw new AuthenticationError(403, 'You are not logged in!');
       };
 
-      validatePassword(password);
       validateEmail(email);
 
       const newUser = {
@@ -31,10 +30,11 @@ async function changeUserSettingsHandler(req, res, next) {
       };
 
       if (password) {
+        validatePassword(password);
         newUser.password = await generateHash(password);
       };
 
-      await User.findOneAndUpdate(user, newUser);
+      await User.findOneAndUpdate({email: user.email}, newUser);
 
       res.status(201).send('User updated successfully!');
     };
@@ -42,3 +42,5 @@ async function changeUserSettingsHandler(req, res, next) {
     next(err);
   };
 };
+
+module.exports = {changeUserSettingsHandler};
