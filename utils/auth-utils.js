@@ -123,15 +123,14 @@ async function validateAuthString(authStr) {
   if (resetPassLink.expiry < new Date(Date.now())) {
     const err = new Error('Link Expired!');
     err.status = 403;
+
+    throw err;
   };
 
   return await User.findOne({_id: resetPassLink.userId});
 };
 
 function generateResetPassLink(user) {
-
-  console.log({user});
-
   return new ResetPassLink({
     _id: new mongoose.Types.ObjectId(),
     value: generateAuthString(),

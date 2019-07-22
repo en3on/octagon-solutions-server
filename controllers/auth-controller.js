@@ -6,7 +6,6 @@ const {
   generateToken,
   generateHash,
   comparePassword,
-  generateAuthString,
   validateAuthString,
   generateResetPassLink,
 } = require('../utils/auth-utils.js');
@@ -101,24 +100,17 @@ async function login(req, res, next) {
  */
 async function forgotPassword(req, res, next) {
   try {
-    const user = await User.findOne({email: req.body.user.email});
+    const user = await User.findOne({email: req.body.email});
 
-    console.log({user});
+    console.log('foundUser for forgot', {user});
 
     const resetPassLink = generateResetPassLink(user);
 
+    console.log('Saving resetpasslink');
+
     await resetPassLink.save();
 
-    console.log({resetPassLink});
-
-    await User.findOneAndUpdate(
-        {email: user.email},
-        {resetPassLink: resetPassLink.id},
-    );
-
-    const updatedUser = await User.findOne({email: user.email});
-
-    console.log({updatedUser});
+    console.log('resetpasslink saved', {resetPassLink});
 
     await new Mailer(user, resetPassLink).forgotPassword();
   } catch (err) {
@@ -143,6 +135,8 @@ async function resetPassword(req, res, next) {
     await User.findOneAndUpdate({email: foundUser.email}, {password});
 
     await ResetPassLink.deleteOne({value: authString});
+
+    res.status(200).send('Successfully updated password');
   } catch (err) {
     next(err);
   };
