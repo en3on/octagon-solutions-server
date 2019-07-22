@@ -1,5 +1,9 @@
 const User = require('../models/User.js');
-const {verifyToken, generateHash} = require('../utils/auth-utils.js');
+const {verifyToken,
+  generateHash,
+  validatePassword,
+  validateEmail,
+} = require('../utils/auth-utils.js');
 
 const {ValidationError, AuthenticationError}
     = require('../utils/error-utils.js');
@@ -12,6 +16,13 @@ async function changeUserSettingsHandler(req, res, next) {
     if (firstName && lastName && email) {
       let user = verifyToken(token);
       user = await User.findOne({email: user});
+
+      if (user === null) {
+        throw new AuthenticationError(403, 'You are not logged in!');
+      };
+
+      validatePassword(password);
+      validateEmail(email);
 
       const newUser = {
         firstName: firstName,

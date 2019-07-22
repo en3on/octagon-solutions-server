@@ -144,6 +144,8 @@ module.exports = {
   generateToken,
   generateHash,
   comparePassword,
+  validatePassword,
+  validateEmail,
   verifyToken,
   generateResetPassLink,
   validateAuthString,
