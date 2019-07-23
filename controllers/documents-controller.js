@@ -3,7 +3,8 @@ const User = require('../models/User.js');
 const {verifyToken} = require('../utils/auth-utils.js');
 const mongoose = require('mongoose');
 
-const {ValidationError, AuthenticationError} = require('../utils/error-utils.js');
+const {ValidationError,
+  AuthenticationError} = require('../utils/error-utils.js');
 const uploadFile = require('../utils/file-uploader.js');
 const {notificationHandler} = require('../utils/notification-handler.js');
 
@@ -106,7 +107,8 @@ async function getUserDocuments(req, res, next) {
     let user = verifyToken(token);
     user = await User.findOne({email: user});
 
-    const requestedUser = await User.findOne({id: userId}).populate('documents');
+    const requestedUser =
+      await User.findOne({id: userId}).populate('documents');
 
     if (user.id !== requestedUser.id && !user.admin) {
       throw new AuthenticationError(403,
