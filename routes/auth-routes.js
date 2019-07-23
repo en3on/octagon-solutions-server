@@ -14,7 +14,8 @@ router.post('/register', register);
 router.post('/login', login);
 router.post('/forgot', forgotPassword);
 router.post('/passwordChange', resetPassword);
-router.post('/getNotifications', getNotifications);
-router.post('/deleteNotification', deleteNotification);
+
+router.get('/getNotifications', getNotifications);
+router.delete('/deleteNotification', deleteNotification);
 
 module.exports = router;
