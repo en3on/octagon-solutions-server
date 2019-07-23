@@ -20,7 +20,7 @@ async function uploadHandler(req, res, next) {
   const {files} = req;
 
   try {
-    if (files === []) {
+    if (files === [] || files === null) {
       throw new ValidationError(400,
           'No files were provided! Please try again!');
     }
