@@ -11,7 +11,8 @@ const {
   generateResetPassLink,
 } = require('../utils/auth-utils.js');
 
-const {ValidationError} = require('../utils/error-utils.js');
+const {ValidationError,
+  AuthenticationError} = require('../utils/error-utils.js');
 
 const Mailer = require('../utils/mailer.js');
 
@@ -102,6 +103,10 @@ async function login(req, res, next) {
 async function forgotPassword(req, res, next) {
   try {
     const user = await User.findOne({email: req.body.email});
+
+    if (user === null) {
+      throw new AuthenticationError(404, 'User Not Found!');
+    };
 
     const resetPassLink = generateResetPassLink(user);
 
