@@ -1,6 +1,6 @@
 // Notification Model
 const mongoose = require('mongoose');
-const schmea = mongoose.Schema;
+const schema = mongoose.Schema;
 
 const NotificationSchema = schema({
   _id: schema.Types.ObjectId,
