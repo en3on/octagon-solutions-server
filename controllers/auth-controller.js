@@ -1,5 +1,6 @@
 const User = require('../models/User.js');
 const ResetPassLink = require('../models/ResetPassLink.js');
+const Notification = require('../models/Notificaion.js');
 
 const {
   generateUser,
@@ -145,9 +146,33 @@ async function resetPassword(req, res, next) {
   };
 };
 
+async function getNotifications(req, res, next) {
+  try {
+    const notifications = await Notification.find({}).populate('users');
+
+    res.status(200).json(notifications);
+  } catch (err) {
+    next(err);
+  }
+};
+
+async function deleteNotification(req, res, next) {
+  const {id} = req.params;
+
+  try {
+    await Notification.deleteOne({id: id});
+
+    res.status(200).send(`Notification with id: ${id} deleted`);
+  } catch (err) {
+    next(err);
+  };
+};
+
 module.exports = {
   register,
   login,
   forgotPassword,
   resetPassword,
+  getNotifications,
+  deleteNotification,
 };
