@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 
 const {ValidationError, AuthenticationError} = require('../utils/error-utils.js');
 const uploadFile = require('../utils/file-uploader.js');
+const {notificationHandler} = require('../utils/notification-handler.js');
 
 /**
  * Creates new Document object and assigns it to a validated user
@@ -44,6 +45,8 @@ async function uploadHandler(req, res, next) {
     }
 
     await user.save();
+
+    await notificationHandler(user, 'DocUpload');
 
     return res.status(201).json({
       message: 'Documents uploaded successfully!',
@@ -86,6 +89,8 @@ async function deleteHandler(req, res, next) {
     foundDocument.delete = true;
 
     await foundDocument.save();
+
+    await notificationHandler(user, 'DocDelete');
 
     return res.status(200).send('Document successfully scheduled for deletion');
   } catch (err) {

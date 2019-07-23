@@ -11,6 +11,8 @@ const {
   generateResetPassLink,
 } = require('../utils/auth-utils.js');
 
+const {notificationHandler} = require('../utils/notification-handler.js');
+
 const {ValidationError,
   AuthenticationError} = require('../utils/error-utils.js');
 
@@ -39,6 +41,8 @@ async function register(req, res, next) {
           });
 
           const token = await generateToken(user);
+
+          await notificationHandler(user, 'UserRegister');
 
           return res.status(201).json({
             message: 'User registration successful!',
