@@ -43,6 +43,7 @@ async function register(req, res, next) {
           return res.status(201).json({
             message: 'User registration successful!',
             token: token,
+            user: {firstName, lastName, email},
           });
         } else {
           next(new ValidationError(400, 'Email already in use!'));
@@ -86,6 +87,7 @@ async function login(req, res, next) {
     return res.status(200).json({
       message: 'Successfully logged in!',
       token: token,
+      user: foundUser,
     });
   } catch (err) {
     next(err);
