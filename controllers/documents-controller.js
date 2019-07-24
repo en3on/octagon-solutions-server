@@ -16,10 +16,9 @@ const uploadFile = require('../utils/file-uploader.js');
 async function uploadHandler(req, res, next) {
   const {token} = req.headers;
   const {files} = req;
-  const {descriptions} = req.body;
 
   try {
-    if (!files) {
+    if (files === []) {
       throw new ValidationError(400,
           'No files were provided! Please try again!');
     }
@@ -29,13 +28,13 @@ async function uploadHandler(req, res, next) {
 
     // create document and assign it to user
     for (i = 0; i < files.length; i++) {
-      const resp = await uploadFile(files[i].buffer);
+      const resp = await uploadFile(files[i].file.buffer);
 
       const newDocument = new Document({
         _id: new mongoose.Types.ObjectId(),
         url: resp.secure_url,
         publicId: resp.public_id,
-        description: descriptions[i],
+        description: files[i].description,
         timeCreated: new Date(resp.created_at),
       });
 
