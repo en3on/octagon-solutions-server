@@ -160,7 +160,7 @@ async function deleteNotification(req, res, next) {
   const {id} = req.params;
 
   try {
-    await Notification.deleteOne({id: id});
+    await Notification.deleteOne({id});
 
     res.status(200).send(`Notification with id: ${id} deleted`);
   } catch (err) {
