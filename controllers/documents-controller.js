@@ -17,6 +17,8 @@ async function uploadHandler(req, res, next) {
   const {token} = req.headers;
   const {files} = req;
 
+  console.log({files});
+
   try {
     if (files === []) {
       throw new ValidationError(400,
@@ -28,13 +30,12 @@ async function uploadHandler(req, res, next) {
 
     // create document and assign it to user
     for (i = 0; i < files.length; i++) {
-      const resp = await uploadFile(files[i].file.buffer);
+      const resp = await uploadFile(files[i].buffer);
 
       const newDocument = new Document({
         _id: new mongoose.Types.ObjectId(),
         url: resp.secure_url,
         publicId: resp.public_id,
-        description: files[i].description,
         timeCreated: new Date(resp.created_at),
       });
 
