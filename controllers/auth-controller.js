@@ -1,6 +1,6 @@
 const User = require('../models/User.js');
 const ResetPassLink = require('../models/ResetPassLink.js');
-const Notification = require('../models/Notificaion.js');
+const Notification = require('../models/Notification.js');
 
 const {
   generateUser,
