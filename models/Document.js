@@ -12,10 +12,6 @@ const DocumentSchema = schema({
     type: String,
     required: true,
   },
-  description: {
-    type: String,
-    required: true,
-  },
   timeCreated: {
     type: Date,
     required: true,
