@@ -132,7 +132,7 @@ async function resetPassword(req, res, next) {
   try {
     const foundUser = await validateAuthString(authString);
 
-    validatePassword(password);
+    validatePassword(newPassword);
 
     const password = await generateHash(newPassword);
 
