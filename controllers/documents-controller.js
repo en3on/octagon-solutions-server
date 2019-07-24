@@ -3,7 +3,7 @@ const User = require('../models/User.js');
 const {verifyToken} = require('../utils/auth-utils.js');
 const mongoose = require('mongoose');
 
-const {ValidationError} = require('../utils/error-utils.js');
+const {ValidationError, AuthenticationError} = require('../utils/error-utils.js');
 const uploadFile = require('../utils/file-uploader.js');
 
 /**
@@ -94,7 +94,31 @@ async function deleteHandler(req, res, next) {
   };
 };
 
+async function getUserDocuments(req, res, next) {
+  try {
+    const {token} = req.headers;
+    const {userId} = req.params;
+
+    let user = verifyToken(token);
+    user = await User.findOne({email: user});
+
+    const requestedUser = await User.findOne({id: userId}).populate('documents');
+
+    if (user.id !== requestedUser.id && !user.admin) {
+      throw new AuthenticationError(403,
+          'You are not authorized to view that user\'s documents!');
+    }
+
+    res.status(200).json({
+      documents: requestedUser.documents,
+    });
+  } catch (err) {
+    next(err);
+  };
+};
+
 module.exports = {
   uploadHandler,
   deleteHandler,
+  getUserDocuments,
 };
