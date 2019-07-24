@@ -5,8 +5,6 @@ const {
   login,
   forgotPassword,
   resetPassword,
-  getNotifications,
-  deleteNotification,
 }
   = require('../controllers/auth-controller.js');
 
@@ -14,8 +12,5 @@ router.post('/register', register);
 router.post('/login', login);
 router.post('/forgot', forgotPassword);
 router.post('/passwordChange', resetPassword);
-
-router.get('/getNotifications', getNotifications);
-router.delete('/deleteNotification', deleteNotification);
 
 module.exports = router;

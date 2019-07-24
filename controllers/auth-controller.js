@@ -1,6 +1,5 @@
 const User = require('../models/User.js');
 const ResetPassLink = require('../models/ResetPassLink.js');
-const Notification = require('../models/Notification.js');
 
 const {
   generateUser,
@@ -11,8 +10,6 @@ const {
   validateAuthString,
   generateResetPassLink,
 } = require('../utils/auth-utils.js');
-
-const {notificationHandler} = require('../utils/notification-handler.js');
 
 const {ValidationError,
   AuthenticationError} = require('../utils/error-utils.js');
@@ -42,8 +39,6 @@ async function register(req, res, next) {
           });
 
           const token = await generateToken(user);
-
-          await notificationHandler(user, 'UserRegister');
 
           return res.status(201).json({
             message: 'User registration successful!',
@@ -146,33 +141,9 @@ async function resetPassword(req, res, next) {
   };
 };
 
-async function getNotifications(req, res, next) {
-  try {
-    const notifications = await Notification.find({}).populate('users');
-
-    res.status(200).json(notifications);
-  } catch (err) {
-    next(err);
-  }
-};
-
-async function deleteNotification(req, res, next) {
-  const {id} = req.params;
-
-  try {
-    await Notification.deleteOne({id});
-
-    res.status(200).send(`Notification with id: ${id} deleted`);
-  } catch (err) {
-    next(err);
-  };
-};
-
 module.exports = {
   register,
   login,
   forgotPassword,
   resetPassword,
-  getNotifications,
-  deleteNotification,
 };
